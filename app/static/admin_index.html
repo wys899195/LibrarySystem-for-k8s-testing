@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="docs/cdn-bootstrap5.1.3.min.css" >
+    <link rel="stylesheet" href="docs/twitter-bootstrap-3.3.7.min.css">  
+    <link rel="stylesheet" href="docs/bdimg-jquery-ui-1.10.4.min.css">
+    <script src="docs/bdimg-jquery-1.10.2.min.js"></script>
+    <script src="docs/bdimg-jquery-ui-1.10.4.min.js"></script>
+    <script src="docs/cdn-jquery-2.1.1.min.js"></script>
+    <script src="docs/cdn-bootstrap-3.3.7.min.js"></script>
+    <script src="docs/cdn-bootstrap-5.1.3.bundle.min.js"></script>
+    <script type="text/javascript" src="admin_index_set.js"></script>
+    <title>管理介面</title>
+
+    <style>
+        .bt {
+            border: none;
+            background-color: #a5a5a5;
+            color: white;
+            font-size: 28px;
+            padding: 20px;/*按鈕內邊距離*/
+            width: 170px;/*按鈕寬*/
+            border-radius: 5px;/*圓角*/
+            margin-right:10px;
+            margin-top: 10px;
+        }
+        
+        .bt:hover{
+            background-color: #000;
+            color: #fff;
+        }
+
+        .table tbody tr td{
+            vertical-align: middle;
+        }
+        .table_tit{  
+            overflow: hidden;  
+            text-overflow: ellipsis;
+        }
+        .one_announcement:hover{
+            text-decoration:underline;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="container">
+      <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <a href="index.html" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+          <img width="50px" height="50px"src="images/ntou_logo.png">
+        </a>
+        <span class="fs-1">海大資工系圖書館系統<span class="fs-2">-管理介面</span></span>
+  
+        <div class="col-md-3 text-end" id = "login_out_block">
+            <a href="Front-Authentication/login.html"><button type="button" class="btn btn-outline-primary me-2">Login</button></a>
+            <a href="Front-Authentication/signup-2.htm"><button type="button" class="btn btn-primary">Sign-up</button></a>
+        </div>
+      </header>
+    </div>
+    <div class="container"> 
+            <div class="row justify-content-center">
+                <input type ="button" class = "bt" onclick="javascript:location.href='php-book/borrowreturn-2.php'" value="出借/還書"></input><!-- //放入要跳轉的網址 -->
+                <input type ="button" class = "bt" onclick="javascript:location.href='php-book/bookchange.php'" value="館藏調整"></input><!-- //放入要跳轉的網址 -->  
+            </div>
+            
+            <div class="row justify-content-center">
+                <input type ="button" class = "bt" onclick="javascript:location.href='php-condiction/condiction.php'" value="使用者權限"></input><!-- //放入要跳轉的網址 -->
+                <input type ="button" class = "bt" onclick="javascript:location.href='Front-Permission/blacklist.html'" value="黑名單"></input><!-- //放入要跳轉的網址 -->  
+            </div>    
+    </div>
+    <div class="container w-50 p-5">
+        <div class="row justify-content-center">
+            <table class="table table-bordered col">
+                <thead>
+                    <tr class="table-warning">
+                        <th colspan="2">目前狀態<button type="button" class="btn btn-outline-primary pull-right">&ensp;</button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style='width:33%; border-right:0px;'>已出借:</td>
+                        <td id="current_state_borrowedNum" style='width:67%; border-left:0px;'></td>
+                    </tr>
+                    <tr>
+                        <td style='width:33%; border-right:0px;'>逾期:</td>
+                        <td id="current_state_overdueNum" style='width:67%; border-left:0px;'></td>
+                    </tr>
+                    <tr>
+                        <td style='width:33%; border-right:0px;'>館藏:</td>
+                        <td id="current_state_holdingsNum" style='width:67%; border-left:0px;'></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-bordered col" >
+                <thead>
+                    <tr class="table-warning">
+                        <th colspan="2">
+                        系統公告
+                            <form style="display: inline " action="php-announcement/announcement_admin.php">                       
+                                <input type="submit" class="btn btn-outline-primary pull-right" value="編輯公告" />
+                            </form>
+                            <!--<form style="display: inline " action="php-announcement/sentOverdueMail.php">
+                                <button  type="submit" class="btn btn-outline-primary pull-right" value="">手動發布逾期通知(電子郵件)</button>
+                            </form>-->
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id = announcement_area>
+
+                </tbody>
+            </table>
+        </div> 
+    </div>
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+          <p class="col-md-4 mb-0 text-muted">&copy; 2021 Company, Inc</p>
+      
+      
+          <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+          </ul>
+        </footer>
+    </div>
+</body>
+</html>

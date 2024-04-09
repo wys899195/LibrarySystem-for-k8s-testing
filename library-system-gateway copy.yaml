@@ -1,0 +1,33 @@
+#gateway
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: library-system-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 8080 
+      name: http
+      protocol: HTTP
+    hosts:
+    - "library-system-fastapi.com"
+---
+#virtual-service
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: library-system
+spec:
+  hosts:
+  - "library-system-fastapi.com"
+  gateways:
+  - library-system-gateway
+  http:
+  - match:
+    route:
+    - destination:
+        host: library-system
+        port:
+          number: 8180

@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: library-system
+  labels:
+    app: library-system
+    service: library-system
+spec:
+  ports:
+  - port: 8180
+    name: http
+  selector:
+    app: library-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: library-system
+  labels:
+    account: library-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: library-system-v1
+  labels:
+    app: library-system
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: library-system
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: library-system
+        version: v1
+    spec:
+      serviceAccountName: library-system
+      containers:
+      - name: library-system-container
+        image: wys899195/fastapi_library_system:latest
+        command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8180"]
+        ports:
+          - containerPort: 8180
+        env:
+          - name: MYSQL_HOST
+            value: mysql  
+          - name: MYSQL_PORT
+            value: "3306" 
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

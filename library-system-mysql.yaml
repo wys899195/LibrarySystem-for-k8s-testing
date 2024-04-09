@@ -1,0 +1,96 @@
+# mysql服務
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  type: NodePort
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+            - name: MYSQL_DATABASE
+              value: library_system
+            - name: MYSQL_USER
+              value: wys899195
+            - name: MYSQL_PASSWORD
+              value: wwww
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-initdb
+              mountPath: "/docker-entrypoint-initdb.d/library_system.sql"
+              subPath: "library_system.sql"
+      volumes:
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb
+
+---
+# phpmyadmin服務
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: phpmyadmin
+  name: phpmyadmin
+spec:
+  ports:
+    - name: tcp
+      port: 8181
+      targetPort: 80
+      nodePort: 30390
+  selector:
+    app: phpmyadmin
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: phpmyadmin
+  name: phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+    spec:
+      containers:
+        - env:
+            - name: PMA_HOST
+              value: mysql
+            - name: PMA_PORT
+              value: '3306'
+            - name: MYSQL_ROOT_PASSWORD
+              value: password 
+          image: phpmyadmin/phpmyadmin
+          name: phpmyadmin
