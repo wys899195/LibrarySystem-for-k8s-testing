@@ -50,6 +50,8 @@ spec:
             value: mysql  
           - name: MYSQL_PORT
             value: "3306" 
+          - name: PYTHONDONTWRITEBYTECODE
+            value: "1"
 ---
 
 

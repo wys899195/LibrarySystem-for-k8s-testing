@@ -87,7 +87,7 @@ $(document).ready(function(){
 
 
 function add_user_to_blacklist(){
-    if(confirm('確認將該使用者加入黑名單?')){
+    if(confirm('確定將該使用者加入到黑名單?')){
         let userID = $("#add_blacklist_userID").val() || "";
         let reason = $("#add_blacklist_reason").val() || "無";
         if (userID){
@@ -96,43 +96,78 @@ function add_user_to_blacklist(){
                 $("#add_blacklist_userID").val("");
             }
             else{
+                //檢查使用者是否已經在黑名單內
                 $.ajax({
-                    type: "POST",
-                    url: "../../api/v1/blacklist",
-                    data: { 
-                        "userID":userID,
-                        "reason":reason
-                    },
+                    type: "GET",
+                    url: "/api/v1/blacklist/" + userID,
                     dataType: "json",
                     success: function (response) {
-                        alert(response['message']);
-                        location.reload();
+                        console.log(response);
+                        if(response['user_in_blacklist'] == "no"){
+                            $.ajax({
+                                type: "POST",
+                                url: "/api/v1/blacklist",
+                                data: { 
+                                    "userID":userID,
+                                    "reason":reason
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    alert(response['message']);
+                                    location.reload();
+                                },
+                                error: function (response) {
+                                    alert(response.responseJSON.detail);
+                                },
+                            });
+                        }
+                        else{
+                            alert("使用者已在黑名單內!");
+                        }
                     },
                     error: function (response) {
                         alert(response.responseJSON.detail);
                     },
                 });
+
             }
         }
     }
 }
 
 function edit_user_in_blacklist(){
-    if(confirm('確認修改嗎?')){
+    if(confirm('確定要修改嗎?')){
         let userID = $("#userID_edit").val() || "";
         let reason = $("#reason_edit").val() || "無";
         if (userID){
+            //檢查使用者是否已不在黑名單內
             $.ajax({
-                type: "PUT",
-                url: "../../api/v1/blacklist",
-                data: { 
-                    "userID":userID,
-                    "reason":reason
-                },
+                type: "GET",
+                url: "/api/v1/blacklist/" + userID,
                 dataType: "json",
                 success: function (response) {
-                    alert(response['message']);
-                    location.reload();
+                    console.log(response);
+                    if(response['user_in_blacklist'] == "yes"){
+                        $.ajax({
+                            type: "PUT",
+                            url: "/api/v1/blacklist/" + userID,
+                            data: { 
+                                "reason":reason
+                            },
+                            dataType: "json",
+                            success: function (response) {
+                                alert(response['message']);
+                                location.reload();
+                            },
+                            error: function (response) {
+                                alert(response.responseJSON.detail);
+                            },
+                        });
+                    }
+                    else{
+                        alert("使用者已不在黑名單內!");
+                        location.reload();
+                    }
                 },
                 error: function (response) {
                     alert(response.responseJSON.detail);
@@ -143,20 +178,35 @@ function edit_user_in_blacklist(){
 }
 
 function delete_user_in_blacklist(){
-    if(confirm('確認將該使用者從黑名單移除?')){
+    if(confirm('確定將該使用者從黑名單移除?')){
         let userID = $("#userID_delete").val() || "";
         if (userID){
             
+            //檢查使用者是否已不在黑名單內
             $.ajax({
-                type: "DELETE",
-                url: "../../api/v1/blacklist",
-                data: { 
-                    "userID":userID
-                },
+                type: "GET",
+                url: "/api/v1/blacklist/" + userID,
                 dataType: "json",
                 success: function (response) {
-                    alert(response['message']);
-                    location.reload();
+                    console.log(response);
+                    if(response['user_in_blacklist'] == "yes"){
+                        $.ajax({
+                            type: "DELETE",
+                            url: "/api/v1/blacklist/" + userID,
+                            dataType: "json",
+                            success: function (response) {
+                                alert(response['message']);
+                                location.reload();
+                            },
+                            error: function (response) {
+                                alert(response.responseJSON.detail);
+                            },
+                        });
+                    }
+                    else{
+                        alert("使用者已不在黑名單內!");
+                        location.reload();
+                    }
                 },
                 error: function (response) {
                     alert(response.responseJSON.detail);
