@@ -1,6 +1,15 @@
 version: '3.7'
 
 services:
+ nginx:
+   image: nginx:latest
+   ports:
+     - "8180:80" # 系統將暴露在主機8180port!!(localhost:8180連到前端首頁)
+   volumes:
+     - ./nginx_config.conf:/etc/nginx/conf.d/default.conf
+     - ./FrontEnd:/var/www/html
+   depends_on:
+     - authentication_service
   # PHPMyAdmin Service
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

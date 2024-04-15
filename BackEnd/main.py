@@ -10,8 +10,3 @@ app = FastAPI(openapi_url=f"{API_PREFIX}/openapi.json", docs_url=f"{API_PREFIX}/
 
 app.include_router(blacklist_APIs, prefix=f'{API_PREFIX}/blacklist')
 app.include_router(authentication_APIs, prefix=f'{API_PREFIX}')
-
-app.mount("/page",StaticFiles(directory="static"),name="static")
-@app.get("/")
-async def redirect_to_index():
-    return RedirectResponse(url="/page/index.html")

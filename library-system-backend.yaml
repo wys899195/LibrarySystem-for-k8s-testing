@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: library-system-backend
+  labels:
+    app: library-system-backend
+    service: library-system-backend
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  selector:
+    app: library-system-backend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: library-system-backend
+  labels:
+    account: library-system-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: library-system-backend-v1
+  labels:
+    app: library-system-backend
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: library-system-backend
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: library-system-backend
+        version: v1
+    spec:
+      serviceAccountName: library-system-backend
+      containers:
+      - name: library-system-backend-container
+        image: wys899195/fastapi_library_system_backend:latest
+        command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+        ports:
+          - containerPort: 8000
+        env:
+          - name: MYSQL_HOST
+            value: mysql  
+          - name: MYSQL_PORT
+            value: "3306" 
+          - name: PYTHONDONTWRITEBYTECODE
+            value: "1"
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+

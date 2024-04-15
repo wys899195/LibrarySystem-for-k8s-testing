@@ -28,6 +28,6 @@ spec:
   - match:
     route:
     - destination:
-        host: library-system
+        host: library-system-frontend
         port:
           number: 8180
