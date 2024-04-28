@@ -1,7 +1,9 @@
 from fastapi import APIRouter,HTTPException,Form
 from handler.db import set_data,fecth_data
 
-blacklist_APIs = APIRouter()
+
+
+blacklist_APIs = APIRouter(tags=["blacklist"])
 
 @blacklist_APIs.get("/{userID}") #檢查使用者是否已經在黑名單內
 async def check_user_is_in_blacklist(userID:str):

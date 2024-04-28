@@ -62,60 +62,25 @@
         </div>
       </header>
     </div>
-    <div class="container"> 
+    <!-- <div class="container"> 
             <div class="row justify-content-center">
-                <input type ="button" class = "bt" onclick="javascript:location.href='php-book/borrowreturn-2.php'" value="出借/還書"></input><!-- //放入要跳轉的網址 -->
-                <input type ="button" class = "bt" onclick="javascript:location.href='php-book/bookchange.php'" value="館藏調整"></input><!-- //放入要跳轉的網址 -->  
+                <input type ="button" class = "bt" onclick="javascript:location.href='Front-BorrowReturnManagement/borrowreturn.html'" value="出借/還書"></input>
+                <input type ="button" class = "bt" onclick="javascript:location.href='php-book/bookchange.php'" value="館藏調整"></input> 
             </div>
             
             <div class="row justify-content-center">
-                <input type ="button" class = "bt" onclick="javascript:location.href='php-condiction/condiction.php'" value="使用者權限"></input><!-- //放入要跳轉的網址 -->
-                <input type ="button" class = "bt" onclick="javascript:location.href='Front-Permission/blacklist.html'" value="黑名單"></input><!-- //放入要跳轉的網址 -->  
+                <input type ="button" class = "bt" onclick="javascript:location.href='php-condiction/condiction.php'" value="使用者權限"></input>
+                <input type ="button" class = "bt" onclick="javascript:location.href='Front-Permission/blacklist.html'" value="黑名單"></input>
             </div>    
-    </div>
-    <div class="container w-50 p-5">
+    </div> -->
+    <div class="container"> 
         <div class="row justify-content-center">
-            <table class="table table-bordered col">
-                <thead>
-                    <tr class="table-warning">
-                        <th colspan="2">目前狀態<button type="button" class="btn btn-outline-primary pull-right">&ensp;</button></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style='width:33%; border-right:0px;'>已出借:</td>
-                        <td id="current_state_borrowedNum" style='width:67%; border-left:0px;'></td>
-                    </tr>
-                    <tr>
-                        <td style='width:33%; border-right:0px;'>逾期:</td>
-                        <td id="current_state_overdueNum" style='width:67%; border-left:0px;'></td>
-                    </tr>
-                    <tr>
-                        <td style='width:33%; border-right:0px;'>館藏:</td>
-                        <td id="current_state_holdingsNum" style='width:67%; border-left:0px;'></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table table-bordered col" >
-                <thead>
-                    <tr class="table-warning">
-                        <th colspan="2">
-                        系統公告
-                            <form style="display: inline " action="php-announcement/announcement_admin.php">                       
-                                <input type="submit" class="btn btn-outline-primary pull-right" value="編輯公告" />
-                            </form>
-                            <!--<form style="display: inline " action="php-announcement/sentOverdueMail.php">
-                                <button  type="submit" class="btn btn-outline-primary pull-right" value="">手動發布逾期通知(電子郵件)</button>
-                            </form>-->
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id = announcement_area>
-
-                </tbody>
-            </table>
-        </div> 
+            <input type ="button" class = "bt" onclick="javascript:location.href='Front-BorrowReturnManagement/borrowreturn.html'" value="出借/還書"></input>
+            <input type ="button" class = "bt" onclick="javascript:location.href='Front-StockManagement/CollectionManagement.html'" value="館藏調整"></input> 
+            <input type ="button" class = "bt" onclick="javascript:location.href='Front-Permission/blacklist.html'" value="黑名單"></input>
+        </div>  
     </div>
+
     <div class="container">
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
           <p class="col-md-4 mb-0 text-muted">&copy; 2021 Company, Inc</p>

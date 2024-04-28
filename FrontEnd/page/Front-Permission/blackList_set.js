@@ -5,7 +5,7 @@ $(document).ready(function(){
     let is_admin = localStorage.getItem("admin") == 1 ? true : false;
     //check is admin or not
     if (!is_admin){
-        window.location.replace('index.html');
+        window.location.replace('../index.html');
     }
 
     //set login block
