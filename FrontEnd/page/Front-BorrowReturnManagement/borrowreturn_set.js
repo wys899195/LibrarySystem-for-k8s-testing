@@ -43,13 +43,13 @@ function borrow_book(){
 
                 $.ajax({
                     type: "GET",
-                    url: "/api/v1/book/"  + ISBN,
+                    url: "/api/v1/collection/"  + ISBN,
                     dataType: "json",
                     success: function (response) {
 
                         $.ajax({
                             type: "POST",
-                            url: "/api/v1/book/borrowBook",
+                            url: "/api/v1/borrowReturn/borrowBook",
                             data: { 
                                 "userID":userID,
                                 "ISBN":ISBN,
@@ -91,13 +91,13 @@ function return_book(){
             success: function (response) {
                 $.ajax({
                     type: "GET",
-                    url: "/api/v1/book/"  + ISBN,
+                    url: "/api/v1/collection/"  + ISBN,
                     dataType: "json",
                     success: function (response) {
 
                         $.ajax({
                             type: "POST",
-                            url: "/api/v1/book/returnBook",
+                            url: "/api/v1/borrowReturn/returnBook",
                             data: { 
                                 "userID":userID,
                                 "ISBN":ISBN,
