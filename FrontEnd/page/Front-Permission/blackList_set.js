@@ -35,7 +35,7 @@ $(document).ready(function(){
         dataType: "json",
         success: function (response) {
             for (let item in response) {
-                console.log(response[item]['userID'])
+                console.log(response[item])
                 let content = 
                     "<tr>" +
                     "<td>" + response[item]['userID'] + "</td>" +
@@ -103,15 +103,15 @@ function add_user_to_blacklist(){
                     dataType: "json",
                     success: function (response) {
                         console.log(response);
-                        if(response['user_in_blacklist'] == "no"){
+                        if(!response['is_user_in_blacklist']){
                             $.ajax({
                                 type: "POST",
                                 url: "/api/v1/blacklist",
-                                data: { 
+                                data: JSON.stringify({ 
                                     "userID":userID,
                                     "reason":reason
-                                },
-                                dataType: "json",
+                                }),
+                                contentType: "application/json",
                                 success: function (response) {
                                     alert(response['message']);
                                     location.reload();
@@ -147,7 +147,7 @@ function edit_user_in_blacklist(){
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
-                    if(response['user_in_blacklist'] == "yes"){
+                    if(response['is_user_in_blacklist']){
                         $.ajax({
                             type: "PUT",
                             url: "/api/v1/blacklist/" + userID,
@@ -189,7 +189,7 @@ function delete_user_in_blacklist(){
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
-                    if(response['user_in_blacklist'] == "yes"){
+                    if(response['is_user_in_blacklist']){
                         $.ajax({
                             type: "DELETE",
                             url: "/api/v1/blacklist/" + userID,

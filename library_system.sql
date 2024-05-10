@@ -89,19 +89,18 @@ CREATE TABLE `users` (
   `token` varchar(100) NOT NULL,
   `status` varchar(100) NOT NULL,
   `regTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `forgettoken` varchar(100) DEFAULT NULL,
-  `admin` varchar(1) NOT NULL
+  `forgettoken` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- 傾印資料表的資料 `users`
 --
 
-INSERT INTO `users` (`username`, `userID`, `email`, `password`, `token`, `status`, `regTime`, `forgettoken`, `admin`) VALUES
-('官老大', '00857006', '00857006@mail.ntou.edu.tw', '111111', '98687d395281c7734472bad2e1f20423', '1', '2021-12-29 15:30:04', NULL, ''),
-('008570200', '00857020', '00857020@mail.ntou.edu.tw', '111111', '92cfe88d1478178766ca41e609ecf1c2', '1', '2021-12-29 17:24:53', NULL, ''),
-('陳冠樺', '00857029', '00857029@mail.ntou.edu.tw', '111111', 'e1db54caf7eb0f6c67e2febe63593cf0', '2', '2021-12-27 14:43:08', NULL, '1'),
-('凱凱', '00857039', '00857039@mail.ntou.edu.tw', '111111', '', '1', '2024-03-15 13:11:42', NULL, '');
+INSERT INTO `users` (`username`, `userID`, `email`, `password`, `token`, `status`, `regTime`, `forgettoken`) VALUES
+('官老大', '00857006', '00857006@mail.ntou.edu.tw', '111111', '98687d395281c7734472bad2e1f20423', '1', '2021-12-29 15:30:04', NULL),
+('008570200', '00857020', '00857020@mail.ntou.edu.tw', '111111', '92cfe88d1478178766ca41e609ecf1c2', '1', '2021-12-29 17:24:53', NULL),
+('陳冠樺', '00857029', '00857029@mail.ntou.edu.tw', '111111', 'e1db54caf7eb0f6c67e2febe63593cf0', '2', '2021-12-27 14:43:08', NULL),
+('凱凱', '00857039', '00857039@mail.ntou.edu.tw', '111111', '', '1', '2024-03-15 13:11:42', NULL);
 
 -- --------------------------------------------------------
 

@@ -100,12 +100,12 @@ function load_current_borrow_state(){
 function add_book(){
     let ISBN = $("#addbook_ISBN").val() || "";
     let stock_num = $("#addbook_num").val() || 0;
-    let bookName = $("#addbook_bookName").val() || "預設書名";
+    let bookName = $("#addbook_bookName").val() || "未提供書名";
     let bookClass = $("#addbook_bookClass").val() || "總類";
-    let author = $("#addbook_author").val() || "預設作者";
-    let publisher = $("#addbook_publisher").val() || "預設出版社";
+    let author = $("#addbook_author").val() || "未提供作者";
+    let publisher = $("#addbook_publisher").val() || "未提供出版社";
     let publishYear = $("#addbook_year").val() || 2000;
-    let describeBook = $("#addbook_describeBook").val() || "無簡介";
+    let describeBook = $("#addbook_describeBook").val() || "暫無簡介";
     if(!ISBN){
         alert("ISBN不得為空");
     }
@@ -113,18 +113,17 @@ function add_book(){
         $.ajax({
             type: "POST",
             url: "/api/v1/collection",
-            data: { 
+            data: JSON.stringify({ 
                 "ISBN":ISBN,
                 "stock_num": parseInt(stock_num),
-                "borrowed_num": 0,
                 "bookName": bookName,
                 "bookClass": bookClass,
                 "author": author,
                 "publisher": publisher,
                 "publishYear": parseInt(publishYear),
                 "describeBook": describeBook
-            },
-            dataType: "json",
+            }),
+            contentType: "application/json",
             success: function (response) {
                 load_ISBN_list();
                 alert(response['message']);
