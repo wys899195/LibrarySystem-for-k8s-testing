@@ -1,12 +1,25 @@
 from fastapi import APIRouter,HTTPException,Form
 from handler.db import set_data,fecth_data
 from datetime import datetime, timedelta
+from pydantic import BaseModel
+from typing import Optional
 
 
 collection_APIs = APIRouter(tags=["collection management"])
 
-@collection_APIs.get("/{ISBN}") #館藏查詢
-async def get_one_book(ISBN:str):
+class Book(BaseModel):
+    ISBN: str
+    stock_num: int
+    borrowed_num: Optional[int] = None
+    bookName: str
+    bookClass: str
+    author: str
+    publisher: str
+    publishYear: int
+    describeBook: Optional[str] = None
+
+@collection_APIs.get("/{ISBN}") #館藏查詢某一本書
+async def get_one_book(ISBN:str) -> Book:
     if len(ISBN) != 13:
         raise HTTPException(status_code=404, detail="書號輸入格式錯誤!!")
     else:
@@ -17,30 +30,60 @@ async def get_one_book(ISBN:str):
         elif len(book) == 0:
             raise HTTPException(status_code=404, detail="館藏無此書")
         else:
-            return book[0]
+            book = book[0]
+
+            return Book(
+                ISBN = book['ISBN'],
+                stock_num = book['stock_num'],
+                borrowed_num = book['borrowed_num'],
+                bookName = book['bookName'],
+                bookClass = book['bookClass'],
+                author = book['author'],
+                publisher = book['publisher'],
+                publishYear = book['publishYear'],
+                describeBook = book['describeBook']
+            )
 
 @collection_APIs.get("") #館藏查詢全部書籍
-async def get_all_book():
+async def get_all_book() -> list[Book]:
     sql = f"SELECT * FROM book"
     books =  fecth_data(sql)
     if books is None:
         raise HTTPException(status_code=501, detail="伺服器發生錯誤(館藏查詢全部書籍)，請聯絡管理員")
     else:
-        return books
+        res = []
+        for book in books:
+            res.append(
+                Book(
+                    ISBN = book['ISBN'],
+                    stock_num = book['stock_num'],
+                    borrowed_num = book['borrowed_num'],
+                    bookName = book['bookName'],
+                    bookClass = book['bookClass'],
+                    author = book['author'],
+                    publisher = book['publisher'],
+                    publishYear = book['publishYear'],
+                    describeBook = book['describeBook']
+                )
+            )
+        return res
 
 @collection_APIs.post("") #上架書籍
-async def add_one_book(ISBN:str = Form(),stock_num:int = Form(),borrowed_num:int = Form(),bookName:str = Form(),bookClass:str = Form(),author:str = Form(),publisher:str = Form(),publishYear:int = Form(),describeBook:str = Form(),):
-    if len(ISBN) != 13:
+async def add_one_book(book: Book):
+    if len(book.ISBN) != 13:
         raise HTTPException(status_code=404, detail="書號輸入格式錯誤!!")
     else:
-        sql = f"SELECT * FROM book WHERE ISBN = '{ISBN}' LIMIT 1"
+        sql = f"SELECT * FROM book WHERE ISBN = '{book.ISBN}' LIMIT 1"
         existing_book =  fecth_data(sql)
         if existing_book is None:
             raise HTTPException(status_code=501, detail="伺服器在上架書籍時發生錯誤，請聯絡管理員")
         elif len(existing_book) != 0:
             raise HTTPException(status_code=400, detail="該書已在館藏中")
         else:
-            sql = f"INSERT INTO `book`(`ISBN`, `stock_num`, `borrowed_num`, `bookName`, `bookClass`, `author`, `publisher`, `publishYear`, `describeBook`) VALUES ('{ISBN}',{stock_num},0,'{bookName}','{bookClass}','{author}','{publisher}',{publishYear},'{describeBook}')"
+            if book.describeBook:
+                sql = f"INSERT INTO `book`(`ISBN`, `stock_num`, `borrowed_num`, `bookName`, `bookClass`, `author`, `publisher`, `publishYear`, `describeBook`) VALUES ('{book.ISBN}',{book.stock_num},0,'{book.bookName}','{book.bookClass}','{book.author}','{book.publisher}',{book.publishYear},'{book.describeBook}')"
+            else:
+                sql = f"INSERT INTO `book`(`ISBN`, `stock_num`, `borrowed_num`, `bookName`, `bookClass`, `author`, `publisher`, `publishYear`, `describeBook`) VALUES ('{book.ISBN}',{book.stock_num},0,'{book.bookName}','{book.bookClass}','{book.author}','{book.publisher}',{book.publishYear},'無')"
             result = set_data(sql)
             if not result:
                 raise HTTPException(status_code=501, detail="伺服器在上架書籍時發生錯誤，請聯絡管理員!")

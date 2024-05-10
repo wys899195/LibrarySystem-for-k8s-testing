@@ -1,9 +1,15 @@
 from fastapi import APIRouter,HTTPException,Form
 from handler.db import fecth_data
-
+from pydantic import BaseModel
 
 
 user_APIs = APIRouter(tags=["users"])
+
+class user(BaseModel):
+    username: str
+    userID: str
+    email: str
+    status: str # identity(0:visitor 1:user 2:admin)
 
 @user_APIs.post("/login") # 使用者登入
 async def user_login(userID:str = Form(),password:str = Form()):
@@ -20,7 +26,7 @@ async def user_login(userID:str = Form(),password:str = Form()):
                 raise HTTPException(status_code=403, detail="帳號尚未通過信箱驗證，故無法使用")
             else:
                 if user['password'] == password:
-                    return user
+                    return {"current_user":user}
                 else:
                     raise HTTPException(status_code=403, detail="帳號或密碼錯誤")
 

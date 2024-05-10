@@ -18,21 +18,32 @@ function login(){
             },
             dataType: "json",
             success: function (response) {
-                localStorage.setItem("loggedin", true);
-                localStorage.setItem("username", response['username']);
-                localStorage.setItem("userID", response['userID']);
-                localStorage.setItem("email", response['email']);
-                localStorage.setItem("status", response['status']);
-                localStorage.setItem("admin", localStorage.getItem("status") == 2 ? 1 : 0);
-                alert("登入成功");
-                let is_admin = localStorage.getItem("admin") == 1 ? true : false;
-                //check is admin or not
-                if (is_admin){
-                    window.location.replace('../admin_index.html');
-                }
-                else{
-                    window.location.replace('../index.html');
-                }
+                $.ajax({
+                    type: "GET",
+                    url: "/api/v1/user/id/"  + userID,
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response);
+                        localStorage.setItem("username", response['username']);
+                        localStorage.setItem("userID", response['userID']);
+                        localStorage.setItem("email", response['email']);
+                        localStorage.setItem("status", response['status']);
+                        localStorage.setItem("admin", localStorage.getItem("status") == 2 ? 1 : 0);
+                        alert("登入成功");
+                        let is_admin = localStorage.getItem("admin") == 1 ? true : false;
+                        //check is admin or not
+                        if (is_admin){
+                            window.location.replace('../admin_index.html');
+                        }
+                        else{
+                            window.location.replace('../index.html');
+                        }
+                    },
+                    error: function (response) {
+                        alert(response.responseJSON.detail);
+                    },
+                });
+
             },
             error: function (response) {
                 alert(response.responseJSON.detail);
