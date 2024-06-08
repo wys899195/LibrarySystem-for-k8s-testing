@@ -5,12 +5,14 @@ This is a simple library system designed for testing Kubernetes deployment.This 
 2. Collection management (including adding and removing books from the collection, adjusting inventory, etc.).
 3. User blacklist management (allowing or prohibiting general users from borrowing and returning books).
 
+The API-only version is [here](https://github.com/wys899195/LibrarySystem-for-API-path-testing-of-KMamiz)
+
 ## Technical Architecture
 1. Frontend: HTML, CSS, and JavaScript.
 2. Backend: Python FastAPI.
 3. Database: MySQL & phpMyAdmin.
 
-## Let's get started
+## Get started
 To install LibrarySystem on your Kubernetes cluster, follow the steps below.
 
 ### Pre-requirements
