@@ -1,4 +1,6 @@
 from fastapi import APIRouter,HTTPException,Form
+from .fastAPI_user import get_one_user
+from .fastapi_collection_management import get_one_book
 from handler.db import set_data,fecth_data
 from datetime import datetime, timedelta
 from pydantic import BaseModel
@@ -10,28 +12,41 @@ class BorrowReturnOperation(BaseModel):
     userID: str
     ISBN: str
     bookNum: int
-    origin_stockNum: int # This value is obtained from another API
-    origin_borrowNum: int # This value is obtained from another API
-
-@borrow_return_APIs.post("/borrowBook") #借書
+@borrow_return_APIs.post("/borrowBook") #borrow book
 async def borrow_book(op: BorrowReturnOperation):
     userID = op.userID
     ISBN = op.ISBN
     bookNum = op.bookNum
-    origin_stockNum = op.origin_stockNum
-    origin_borrowNum = op.origin_borrowNum
+
+    # Check if user exists
+    try:
+        user = await get_one_user(userID)
+    except HTTPException as he:
+        raise he
+
+    # Check if the book is in the collection  
+    book = None
+    try:
+        book = await get_one_book(ISBN)
+    except HTTPException as he:
+        raise he
+
+    origin_stockNum = book.stock_num
+    origin_borrowNum = book.borrowed_num
+
+    
     if bookNum > origin_stockNum:
         return {"message": f"書籍庫存不足，僅剩餘 {origin_stockNum} 本","userID": userID,"ISBN": ISBN}
     elif bookNum <= 0:
         return {"message": "借閱數量須大於0","userID": userID,"ISBN": ISBN}
     else:
-        # 更新庫存
+        # update collection
         sql = f"UPDATE `book` SET `stock_num` = {origin_stockNum - bookNum},borrowed_num = {origin_borrowNum + bookNum} WHERE `ISBN` = '{ISBN}'"
         result = set_data(sql)
         if result:
             start_rent_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             lasting_return_date = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S")
-            # 更新借閱紀錄
+            # update borrowing history
             sql = f"SELECT * FROM user_book_history WHERE ISBN = '{ISBN}'AND userID = '{userID}' AND start_rent_date = '{start_rent_date}' LIMIT 1"
             record = fecth_data(sql)
             if record != None:
@@ -47,14 +62,29 @@ async def borrow_book(op: BorrowReturnOperation):
         raise HTTPException(status_code=501, detail="伺服器發生錯誤(借出書籍)，請聯絡管理員")
 
 
-@borrow_return_APIs.post("/returnBook") #還書
+@borrow_return_APIs.post("/returnBook") # return book
 async def return_book(op: BorrowReturnOperation):
     userID = op.userID
     ISBN = op.ISBN
     bookNum = op.bookNum
-    origin_stockNum = op.origin_stockNum
-    origin_borrowNum = op.origin_borrowNum
-    #獲取借閱紀錄
+
+    # Check if user exists
+    try:
+        user = await get_one_user(userID)
+    except HTTPException as he:
+        raise he
+
+    # Check if the book is in the collection  
+    book = None
+    try:
+        book = await get_one_book(ISBN)
+    except HTTPException as he:
+        raise he
+
+    origin_stockNum = book.stock_num
+    origin_borrowNum = book.borrowed_num
+
+    #Get the user's borrowing history
     sql = f"SELECT * FROM user_book_history WHERE userID = '{userID}' AND ISBN = '{ISBN}' AND return_date = '' ORDER BY start_rent_date ASC"
     records = fecth_data(sql)
     if records == None:
@@ -121,8 +151,3 @@ async def return_book(op: BorrowReturnOperation):
                         current_book_stock_num += record['borrowing_num']
                         current_book_borrow_num -= record['borrowing_num']
                         continue
-
-
-# @borrow_return_APIs.get("/history/{userID}") #查詢使用者借閱紀錄
-# async def get_user_history():
-#     pass

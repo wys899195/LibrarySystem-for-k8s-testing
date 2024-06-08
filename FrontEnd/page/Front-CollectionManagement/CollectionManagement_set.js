@@ -49,6 +49,7 @@ function load_ISBN_list(){
         url: "/api/v1/collection",
         dataType: "json",
         success: function(response) {
+            response = response['booklist']
             for (let book in response) {
                 let content = `<option value="` + response[book]['ISBN'] + `">` + response[book]['ISBN'] + `</option>`;
                 $("#updatebook_ISBN").append(content);
