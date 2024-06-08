@@ -1,19 +1,32 @@
 from fastapi import APIRouter,HTTPException,Form
 from handler.db import set_data,fecth_data
 from datetime import datetime, timedelta
-
+from pydantic import BaseModel
+from typing import Optional
 
 borrow_return_APIs = APIRouter(tags=["borrow/return management"])
 
+class BorrowReturnOperation(BaseModel):
+    userID: str
+    ISBN: str
+    bookNum: int
+    origin_stockNum: int # This value is obtained from another API
+    origin_borrowNum: int # This value is obtained from another API
+
 @borrow_return_APIs.post("/borrowBook") #借書
-async def borrow_book(userID:str = Form(),ISBN:str = Form(),borrowNum:int = Form(),origin_stockNum:int = Form(),origin_borrowNum:int = Form()):
-    if borrowNum > origin_stockNum:
-        return {"message": f"書籍庫存不足，僅剩餘 {origin_stockNum} 本"}
-    elif borrowNum <= 0:
-        return {"message": "借閱數量須大於0"}
+async def borrow_book(op: BorrowReturnOperation):
+    userID = op.userID
+    ISBN = op.ISBN
+    bookNum = op.bookNum
+    origin_stockNum = op.origin_stockNum
+    origin_borrowNum = op.origin_borrowNum
+    if bookNum > origin_stockNum:
+        return {"message": f"書籍庫存不足，僅剩餘 {origin_stockNum} 本","userID": userID,"ISBN": ISBN}
+    elif bookNum <= 0:
+        return {"message": "借閱數量須大於0","userID": userID,"ISBN": ISBN}
     else:
         # 更新庫存
-        sql = f"UPDATE `book` SET `stock_num` = {origin_stockNum - borrowNum},borrowed_num = {origin_borrowNum + borrowNum} WHERE `ISBN` = '{ISBN}'"
+        sql = f"UPDATE `book` SET `stock_num` = {origin_stockNum - bookNum},borrowed_num = {origin_borrowNum + bookNum} WHERE `ISBN` = '{ISBN}'"
         result = set_data(sql)
         if result:
             start_rent_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -23,36 +36,41 @@ async def borrow_book(userID:str = Form(),ISBN:str = Form(),borrowNum:int = Form
             record = fecth_data(sql)
             if record != None:
                 if len(record) == 0:
-                    sql = f"INSERT INTO user_book_history (userID,ISBN,borrowing_num,start_rent_date,lasting_return_date,return_date) VALUES('{userID}','{ISBN}','{borrowNum}','{start_rent_date}','{lasting_return_date}','')"
+                    sql = f"INSERT INTO user_book_history (userID,ISBN,borrowing_num,start_rent_date,lasting_return_date,return_date) VALUES('{userID}','{ISBN}','{bookNum}','{start_rent_date}','{lasting_return_date}','')"
                 else:
-                    sql = f"UPDATE user_book_history SET borrowing_num = '{borrowNum + record[0]['borrowing_num']}' WHERE userID = '{userID}' AND ISBN = '{ISBN}'  AND start_rent_date = '{start_rent_date}'"
+                    sql = f"UPDATE user_book_history SET borrowing_num = '{bookNum + record[0]['borrowing_num']}' WHERE userID = '{userID}' AND ISBN = '{ISBN}'  AND start_rent_date = '{start_rent_date}'"
                 result = set_data(sql)
                 if result:
-                    return {"message": "借出書籍成功"}
+                    return {"message": "借出書籍成功","userID": userID,"ISBN": ISBN}
             sql = f"UPDATE `book` SET `stock_num` = {origin_stockNum},borrowed_num = {origin_borrowNum} WHERE `ISBN` = '{ISBN}'"
             result = set_data(sql)
         raise HTTPException(status_code=501, detail="伺服器發生錯誤(借出書籍)，請聯絡管理員")
 
 
 @borrow_return_APIs.post("/returnBook") #還書
-async def return_book(userID:str = Form(),ISBN:str = Form(),returnNum:int = Form(),origin_stockNum:int = Form(),origin_borrowNum:int = Form()):
+async def return_book(op: BorrowReturnOperation):
+    userID = op.userID
+    ISBN = op.ISBN
+    bookNum = op.bookNum
+    origin_stockNum = op.origin_stockNum
+    origin_borrowNum = op.origin_borrowNum
     #獲取借閱紀錄
     sql = f"SELECT * FROM user_book_history WHERE userID = '{userID}' AND ISBN = '{ISBN}' AND return_date = '' ORDER BY start_rent_date ASC"
     records = fecth_data(sql)
     if records == None:
         raise HTTPException(status_code=501, detail="伺服器發生錯誤(歸還書籍)，請聯絡管理員")
     elif len(records) == 0:
-        return {"message": "這位使用者並無借閱此書的紀錄"}
+        return {"message": "這位使用者並無借閱此書的紀錄","userID": userID,"ISBN": ISBN}
     else:
         return_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         borrowing_num = 0
         for record in records:
             borrowing_num += record['borrowing_num']
-        if returnNum > borrowing_num:
-            return {"message": f"這位使用者沒有借那麼多書，只有借 {borrowing_num} 本"} 
+        if bookNum > borrowing_num:
+            return {"message": f"這位使用者沒有借那麼多書，只有借 {borrowing_num} 本","userID": userID,"ISBN": ISBN} 
         else:
 
-            current_remain_returnNum = returnNum
+            current_remain_returnNum = bookNum
             current_book_stock_num = origin_stockNum
             current_book_borrow_num = origin_borrowNum
             for record in records:
@@ -83,7 +101,7 @@ async def return_book(userID:str = Form(),ISBN:str = Form(),returnNum:int = Form
                     if not result:
                         raise HTTPException(status_code=501, detail="伺服器發生錯誤(歸還書籍)，請聯絡管理員!!")  
                     else:
-                        return {"message": "歸還書籍成功"} 
+                        return {"message": "歸還書籍成功","userID": userID,"ISBN": ISBN}
                 else:
                     result = set_data(f"""
                                 UPDATE book AS b
