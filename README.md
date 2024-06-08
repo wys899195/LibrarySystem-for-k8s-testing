@@ -8,7 +8,7 @@ This is a simple library system designed for testing Kubernetes deployment.This 
 ## Technical Architecture
 1. Frontend: HTML, CSS, and JavaScript.
 2. Backend: Python FastAPI.
-3. Utilizes the MySQL database system, with phpMyAdmin allowing administrators to manage MySQL databases via a web interface.
+3. Database: MySQL & phpMyAdmin.
 
 ## Let's get started
 To install LibrarySystem on your Kubernetes cluster, follow the steps below.
