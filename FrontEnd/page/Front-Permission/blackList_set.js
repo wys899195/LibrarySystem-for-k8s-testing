@@ -34,6 +34,7 @@ $(document).ready(function(){
         url: "/api/v1/blacklist",
         dataType: "json",
         success: function (response) {
+            response = response['blacklist']
             for (let item in response) {
                 console.log(response[item])
                 let content = 

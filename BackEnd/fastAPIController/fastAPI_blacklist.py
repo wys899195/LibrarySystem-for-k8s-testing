@@ -41,7 +41,7 @@ async def get_all_blacklist() -> list[BlacklistItem]:
                     reason=user['reason']
                 )
             )
-        return res
+        return {"blacklist":res}
 
 @blacklist_APIs.post("") # 新增使用者到黑名單
 async def post_one_user_to_blacklist(req : BlacklistItem):

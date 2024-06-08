@@ -66,7 +66,7 @@ async def get_all_book() -> list[Book]:
                     describeBook = book['describeBook']
                 )
             )
-        return res
+        return {"booklist":res}
 
 @collection_APIs.post("") #上架書籍
 async def add_one_book(book: Book):

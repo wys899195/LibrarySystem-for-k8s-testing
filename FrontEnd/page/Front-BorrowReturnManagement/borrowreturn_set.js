@@ -36,42 +36,16 @@ function borrow_book(){
     let bookNum = $("#borrowreturn_num").val() || "";
     if (userID && ISBN && bookNum){
         $.ajax({
-            type: "GET",
-            url: "/api/v1/user/id/"  + userID,
-            dataType: "json",
+            type: "POST",
+            url: "/api/v1/borrowReturn/borrowBook",
+            data: JSON.stringify({ 
+                "userID":userID,
+                "ISBN":ISBN,
+                "bookNum":bookNum
+            }),
+            contentType: "application/json",
             success: function (response) {
-
-                $.ajax({
-                    type: "GET",
-                    url: "/api/v1/collection/"  + ISBN,
-                    dataType: "json",
-                    success: function (response) {
-
-                        $.ajax({
-                            type: "POST",
-                            url: "/api/v1/borrowReturn/borrowBook",
-                            data: JSON.stringify({ 
-                                "userID":userID,
-                                "ISBN":ISBN,
-                                "bookNum":bookNum,
-                                "origin_stockNum":response['stock_num'],
-                                "origin_borrowNum":response['borrowed_num'],
-                            }),
-                            contentType: "application/json",
-                            success: function (response) {
-                                alert(response['message']);
-                            },
-                            error: function (response) {
-                                alert(response.responseJSON.detail);
-                            },
-                        });
-                        
-                    },
-                    error: function (response) {
-                        alert(response.responseJSON.detail);
-                    },
-                });
-
+                alert(response['message']);
             },
             error: function (response) {
                 alert(response.responseJSON.detail);
@@ -85,41 +59,16 @@ function return_book(){
     let bookNum = $("#borrowreturn_num").val() || "";
     if (userID && ISBN && bookNum){
         $.ajax({
-            type: "GET",
-            url: "/api/v1/user/id/"  + userID,
-            dataType: "json",
+            type: "POST",
+            url: "/api/v1/borrowReturn/returnBook",
+            data: JSON.stringify({ 
+                "userID":userID,
+                "ISBN":ISBN,
+                "bookNum":bookNum
+            }),
+            contentType: "application/json",
             success: function (response) {
-                $.ajax({
-                    type: "GET",
-                    url: "/api/v1/collection/"  + ISBN,
-                    dataType: "json",
-                    success: function (response) {
-
-                        $.ajax({
-                            type: "POST",
-                            url: "/api/v1/borrowReturn/returnBook",
-                            data: JSON.stringify({ 
-                                "userID":userID,
-                                "ISBN":ISBN,
-                                "bookNum":bookNum,
-                                "origin_stockNum":response['stock_num'],
-                                "origin_borrowNum":response['borrowed_num'],
-                            }),
-                            contentType: "application/json",
-                            success: function (response) {
-                                alert(response['message']);
-                            },
-                            error: function (response) {
-                                alert(response.responseJSON.detail);
-                            },
-                        });
-                        
-                    },
-                    error: function (response) {
-                        alert(response.responseJSON.detail);
-                    },
-                });
-
+                alert(response['message']);
             },
             error: function (response) {
                 alert(response.responseJSON.detail);
