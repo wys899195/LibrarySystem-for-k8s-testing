@@ -25,11 +25,12 @@ To install LibrarySystem on your Kubernetes cluster, follow the steps below.
    ```
    ./run.sh
    ```
-2. Referencing the steps for [deploying the Bookinfo system with Istio](https://istio.io/latest/docs/setup/getting-started/#determining-the-ingress-ip-and-ports), get the $GATEWAY_URL of the Istio system.
-3. Open "http://$GATEWAY_URL/page" to see the front-end homepage of the system.
-4. Additionally, you can also open "http://$GATEWAY_URL/api/v1/docs" to view the system's FastAPI documentation.
+### Viewing the front-end pages of this system.
+1. Referencing the steps for [deploying the Bookinfo system with Istio](https://istio.io/latest/docs/setup/getting-started/#determining-the-ingress-ip-and-ports), get the $GATEWAY_URL of the Istio system.
+2. Open "http://$GATEWAY_URL/page" to see the front-end homepage of the system.
+3. Additionally, you can also open "http://$GATEWAY_URL/api/v1/docs" to view the system's FastAPI documentation.
    
-### Uninstall
+## Uninstall
 1. You can execute stop.sh to quickly undeploy.
    ```
    ./stop.sh
@@ -39,3 +40,7 @@ To install LibrarySystem on your Kubernetes cluster, follow the steps below.
    kubectl delete ns library-system
    ```
 3. Delete the related Docker containers.
+   ```
+   docker rmi -f wys899195/fastapi_library_system_backend
+   docker rmi -f wys899195/fastapi_library_system_frontend
+   ```
