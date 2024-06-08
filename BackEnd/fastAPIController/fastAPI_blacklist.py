@@ -49,6 +49,7 @@ async def post_one_user_to_blacklist(req : BlacklistItem):
     sql = f"select username FROM users where userID ='{req.userID}' LIMIT 1"
     user = fecth_data(sql)
     if len(user) != 0:
+        # 檢查使用者是否已在黑名單
         username = user[0]['username']
         if req.reason:
             sql = f"  insert into blacklist VALUES('{req.userID}','{username}','{req.reason}')"
@@ -56,7 +57,7 @@ async def post_one_user_to_blacklist(req : BlacklistItem):
             sql = f"  insert into blacklist VALUES('{req.userID}','{username}','無')"
         result = set_data(sql)
         if result:
-            return {"message": "加入成功!"}
+            return {"message": "加入成功!","userID":req.userID}
         else:
             raise HTTPException(status_code=501, detail="加入失敗，請聯絡管理員")
     else:
@@ -70,7 +71,7 @@ async def put_one_user_to_blacklist(userID:str,reason: Optional[str] = Form(None
         sql = f"update blacklist set reason = '無' where userID = '{userID}'"
     result = set_data(sql)
     if result:
-        return {"message": "編輯成功!"}
+        return {"message": "編輯成功!","userID":userID}
     else:
         raise HTTPException(status_code=501, detail="編輯失敗，請聯絡管理員")
 
@@ -79,6 +80,6 @@ async def delete_one_user_in_blacklist(userID:str):
     sql = f"delete from blacklist where userID = '{userID}'"
     result = set_data(sql)
     if result:
-        return {"message": "刪除成功!"}
+        return {"message": "刪除成功!","userID":userID}
     else:
         raise HTTPException(status_code=501, detail="刪除失敗，請聯絡管理員")

@@ -33,8 +33,8 @@ $(document).ready(function(){
 function borrow_book(){
     let userID = $("#borrowreturn_userID").val() || "";
     let ISBN = $("#borrowreturn_ISBN").val() || "";
-    let borrowNum = $("#borrowreturn_num").val() || "";
-    if (userID && ISBN && borrowNum){
+    let bookNum = $("#borrowreturn_num").val() || "";
+    if (userID && ISBN && bookNum){
         $.ajax({
             type: "GET",
             url: "/api/v1/user/id/"  + userID,
@@ -50,14 +50,14 @@ function borrow_book(){
                         $.ajax({
                             type: "POST",
                             url: "/api/v1/borrowReturn/borrowBook",
-                            data: { 
+                            data: JSON.stringify({ 
                                 "userID":userID,
                                 "ISBN":ISBN,
-                                "borrowNum":borrowNum,
+                                "bookNum":bookNum,
                                 "origin_stockNum":response['stock_num'],
                                 "origin_borrowNum":response['borrowed_num'],
-                            },
-                            dataType: "json",
+                            }),
+                            contentType: "application/json",
                             success: function (response) {
                                 alert(response['message']);
                             },
@@ -82,8 +82,8 @@ function borrow_book(){
 function return_book(){
     let userID = $("#borrowreturn_userID").val() || "";
     let ISBN = $("#borrowreturn_ISBN").val() || "";
-    let returnNum = $("#borrowreturn_num").val() || "";
-    if (userID && ISBN && returnNum){
+    let bookNum = $("#borrowreturn_num").val() || "";
+    if (userID && ISBN && bookNum){
         $.ajax({
             type: "GET",
             url: "/api/v1/user/id/"  + userID,
@@ -98,14 +98,14 @@ function return_book(){
                         $.ajax({
                             type: "POST",
                             url: "/api/v1/borrowReturn/returnBook",
-                            data: { 
+                            data: JSON.stringify({ 
                                 "userID":userID,
                                 "ISBN":ISBN,
-                                "returnNum":returnNum,
+                                "bookNum":bookNum,
                                 "origin_stockNum":response['stock_num'],
                                 "origin_borrowNum":response['borrowed_num'],
-                            },
-                            dataType: "json",
+                            }),
+                            contentType: "application/json",
                             success: function (response) {
                                 alert(response['message']);
                             },

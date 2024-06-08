@@ -88,7 +88,7 @@ async def add_one_book(book: Book):
             if not result:
                 raise HTTPException(status_code=501, detail="伺服器在上架書籍時發生錯誤，請聯絡管理員!")
             else:
-                return {"message": "上架書籍成功"}
+                return {"message": "上架書籍成功","ISBN": book.ISBN}
 
 @collection_APIs.put("/{ISBN}") #館藏調整
 async def update_one_book(ISBN:str,new_stock_num:int = Form()):
@@ -114,7 +114,7 @@ async def update_one_book(ISBN:str,new_stock_num:int = Form()):
                 if not result:
                     raise HTTPException(status_code=501, detail="伺服器在館藏調整時發生錯誤，請聯絡管理員")
                 else:
-                    return {"message": "館藏調整成功"}
+                    return {"message": "館藏調整成功","ISBN": ISBN}
 
 @collection_APIs.delete("/{ISBN}") #下架書籍
 async def delete_one_book(ISBN:str):
@@ -136,4 +136,4 @@ async def delete_one_book(ISBN:str):
                 if not result:
                     raise HTTPException(status_code=501, detail="伺服器在下架書籍時發生錯誤，請聯絡管理員!")
                 else:
-                    return {"message": "下架書籍成功"}
+                    return {"message": "下架書籍成功","ISBN": ISBN}
