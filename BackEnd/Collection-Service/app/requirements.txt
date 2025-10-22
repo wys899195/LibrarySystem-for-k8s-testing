@@ -1,0 +1,11 @@
+fastapi==0.79.0
+fastapi-pagination==0.9.3
+uvicorn==0.18.2
+typing_extensions==4.3.0
+pydantic==1.9.2
+passlib==1.7.4
+python-jose==3.3.0
+pymysql==1.1.0
+python-multipart==0.0.9
+cryptography==3.4.8
+requests==2.25.1

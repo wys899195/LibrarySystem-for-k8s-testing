@@ -1,0 +1,9 @@
+##################################################################
+# 功能：此sh檔負責下架服務，將服務從Kubernetes中移除
+#
+# 備註：此sh檔通常不常使用，主要在需要修改k8s的相關設定檔才需要執行
+##################################################################
+
+
+kubectl -n library-system delete configmap mysql-initdb
+kubectl -n library-system delete -f ../library-system-mysql.yaml

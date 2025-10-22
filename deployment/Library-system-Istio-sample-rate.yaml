@@ -1,0 +1,9 @@
+#(來源：https://github.com/stanley2058/KMamiz)
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      tracing:
+        sampling: 100

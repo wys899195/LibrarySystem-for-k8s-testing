@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-service
+  labels:
+    app: account-service
+    service: account-service
+spec:
+  type: NodePort
+  selector:
+    app: account-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+    nodePort: 30051
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: account-service
+  labels:
+    account: account-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-service-v1
+  labels:
+    app: account-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: account-service
+        version: v1
+    spec:
+      serviceAccountName: account-service
+      containers:
+        # 服務本體的容器
+        - name: account-service-container
+          image: wys899195_library/account_service:latest
+          imagePullPolicy: Never
+          command: 
+            - "/bin/sh"
+            - "-c"
+            - >
+              uvicorn main:app --reload --host 0.0.0.0 --port 8000
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MYSQL_HOST
+              value: mysql  
+            - name: MYSQL_PORT
+              value: "3306" 
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+---
