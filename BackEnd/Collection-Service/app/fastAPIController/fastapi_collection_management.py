@@ -105,7 +105,7 @@ async def update_one_book(ISBN:str,new_stock_num:int = Form()):
             book = book[0]
             current_stock_num = book['stock_num']
             if new_stock_num == current_stock_num:
-                raise HTTPException(status_code=400, detail="與目前館藏數量相同，無須調整")
+                return {"message": "與目前館藏數量相同，無須調整","ISBN": ISBN}
             elif new_stock_num < 0:
                 raise HTTPException(status_code=400, detail="調整後的館藏數量不能少於0")
             else:

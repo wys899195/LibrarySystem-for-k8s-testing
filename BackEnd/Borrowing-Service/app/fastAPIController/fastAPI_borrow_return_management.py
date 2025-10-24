@@ -1,13 +1,14 @@
 from fastapi import APIRouter,HTTPException,Depends
-from service_communicator.account_service_comunicator import get_one_user
+from service_communicator.account_service_comunicator import get_one_user,check_user_in_blacklist
 from service_communicator.collection_service_comunicator import get_one_book
 from handler.db import set_data,fecth_data
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 from handler.distributed_tracing_header_handler import get_forward_distributed_tracing_headers
-
+import os
 
 borrow_return_APIs = APIRouter(tags=["borrow/return management"])
+IS_NEW_VER = os.getenv("IS_NEW_VER", "false").lower() == "true"
 
 class BorrowReturnOperation(BaseModel):
     userID: str
@@ -27,13 +28,23 @@ def borrow_book(
         userID=userID,
         distributed_tracing_headers=distributed_tracing_headers
     )
+    
+    # Check if user is in the blacklist
+    if IS_NEW_VER == True:
+        is_user_in_blacklist = check_user_in_blacklist(
+            userID=userID,
+            distributed_tracing_headers=distributed_tracing_headers
+        )
+        if is_user_in_blacklist:
+            return {"message": "該使用者目前在黑名單中，不可借閱","userID": userID,"ISBN": ISBN}
+    
 
     # Check if the book is in the collection  
     book = get_one_book(
         ISBN=ISBN,
         distributed_tracing_headers=distributed_tracing_headers
     )
-
+    
     origin_stockNum = book["stock_num"]
     origin_borrowNum = book["borrowed_num"]
 

@@ -33,3 +33,28 @@ def get_one_user(userID,distributed_tracing_headers={}):
     detail = extract_upstream_error(response)
     raise HTTPException(status_code=response.status_code, detail=detail)
 
+
+def check_user_in_blacklist(userID, distributed_tracing_headers={}):
+    req_url = f"{ACCOUNT_SERVICE_DOMAIN}/api/v1/account/blacklist/user/id/{userID}"
+    try:
+        response = requests.get(
+            url=req_url,
+            timeout=15,
+            headers=distributed_tracing_headers
+        )
+    except Timeout:
+        raise HTTPException(status_code=504, detail="連線至Account服務逾時")
+    except RequestException as e:
+        raise HTTPException(status_code=502, detail=f"無法連線至Account服務：{e}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"未知錯誤：{e}")
+
+    if response.status_code == 200:
+        data = response.json()
+        print(f"成功檢查黑名單狀態：{data}")
+        # API 回傳格式：{"is_user_in_blacklist": True/False}
+        return data.get("is_user_in_blacklist", False)
+
+    # 非 200 狀態碼 → 拋出上游錯誤
+    detail = extract_upstream_error(response)
+    raise HTTPException(status_code=response.status_code, detail=detail)

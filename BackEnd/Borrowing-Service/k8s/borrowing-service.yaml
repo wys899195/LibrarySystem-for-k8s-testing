@@ -66,6 +66,7 @@ spec:
               value: "http://account-service.library-system.svc.cluster.local"
             - name: COLLECTION_SERVICE_DOMAIN
               value: "http://collection-service.library-system.svc.cluster.local"
-
+            - name: IS_NEW_VER
+              value: "true"
               
 ---
