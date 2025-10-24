@@ -16,21 +16,15 @@ The API-only version is [here](https://github.com/wys899195/LibrarySystem-for-AP
 To install LibrarySystem on your Kubernetes cluster, follow the steps below.
 
 ### Pre-requirements
-1. Prepare a Kubernetes cluster environment (e.g., using Minikube).
-2. [Istio](https://istio.io/latest/docs/setup/getting-started/) is installed in your cluster.
-3. Namespace library-system exists.
-   ```
-   kubectl create ns library-system
-   ```
+1. Ensure the Docker environment is ready in the virtual machine.
+2. Set up a Minikube cluster.
+
 ### Deployment 
-1. You can execute run.sh for quick deployment.
-   ```
-   ./run.sh
-   ```
+1. If you have already set up the Minikube environment and the virtual machine has more than 10GB of memory, you can directly execute **`run_all.sh`**  in the deployment folder for a quick deployment.
+2. If the memory size is insufficient, you can edit the start_minikube.sh file to adjust the memory allocation for starting Minikube.
+
 ### Viewing the front-end pages of this system.
-1. Referencing the steps for [deploying the Bookinfo system with Istio](https://istio.io/latest/docs/setup/getting-started/#determining-the-ingress-ip-and-ports), get the $GATEWAY_URL of the Istio system.
-2. Open "http://$GATEWAY_URL/page" to see the front-end homepage of the system.
-3. Additionally, you can also open "http://$GATEWAY_URL/api/v1/docs" to view the system's FastAPI documentation.
+1. Open "[http://localhost:6677/](http://localhost:6677/)" to see the front-end homepage of the system.
    
 ## Uninstall
 1. You can execute stop.sh to quickly undeploy.
