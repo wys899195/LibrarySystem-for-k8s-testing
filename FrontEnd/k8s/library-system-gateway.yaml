@@ -26,20 +26,10 @@ spec:
   - library-system-gateway
   http:
 
-  # 把所有前綴是"/api/v1/user"的api請求轉給account-service處理
+  # 把所有前綴是"/api/v1/account/user"的api請求轉給account-service處理
   - match:
       - uri:
-          prefix: "/api/v1/user"
-    route:
-      - destination:
-          host: account-service.library-system.svc.cluster.local
-          port:
-            number: 80
-
-  # 把所有前綴是"/api/v1/blacklist"的api請求轉給account-service處理
-  - match:
-      - uri:
-          prefix: "/api/v1/blacklist"
+          prefix: "/api/v1/account"
     route:
       - destination:
           host: account-service.library-system.svc.cluster.local
@@ -47,10 +37,10 @@ spec:
             number: 80
 
 
-  # 把所有前綴是"/api/v1/borrowReturn"的api請求轉給borrowing-service處理
+  # 把所有前綴是"/api/v1/borrowing"的api請求轉給borrowing-service處理
   - match:
       - uri:
-          prefix: "/api/v1/borrowReturn"
+          prefix: "/api/v1/borrowing"
     route:
       - destination:
           host: borrowing-service.library-system.svc.cluster.local

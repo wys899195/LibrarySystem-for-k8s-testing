@@ -9,10 +9,14 @@ ACCOUNT_SERVICE_DOMAIN = os.getenv("ACCOUNT_SERVICE_DOMAIN")
 
 
 
-def get_one_user(userID):
-    req_url = f"{ACCOUNT_SERVICE_DOMAIN}/api/v1/user/id/{userID}"
+def get_one_user(userID,distributed_tracing_headers={}):
+    req_url = f"{ACCOUNT_SERVICE_DOMAIN}/api/v1/account/user/id/{userID}"
     try:
-        response = requests.get(req_url, timeout=15)
+        response = requests.get(
+            url=req_url, 
+            timeout=15,
+            headers=distributed_tracing_headers
+        )
     except Timeout:
         raise HTTPException(status_code=504, detail="連線至Account服務逾時")
     except RequestException as e:

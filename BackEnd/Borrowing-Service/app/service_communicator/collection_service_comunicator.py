@@ -7,10 +7,14 @@ from handler.distributed_tracing_header_handler import extract_upstream_error
 ## 環境變數 ##
 COLLECTION_SERVICE_DOMAIN = os.getenv("COLLECTION_SERVICE_DOMAIN")
 
-def get_one_book(ISBN: str):
-    req_url = f"{COLLECTION_SERVICE_DOMAIN}/api/v1/collection/{ISBN}"
+def get_one_book(ISBN: str,distributed_tracing_headers={}):
+    req_url = f"{COLLECTION_SERVICE_DOMAIN}/api/v1/collection/book/isbn/{ISBN}"
     try:
-        response = requests.get(req_url, timeout=15)
+        response = requests.get(
+            url=req_url, 
+            timeout=15,
+            headers=distributed_tracing_headers
+        )
     except Timeout:
         raise HTTPException(status_code=504, detail="連線至Collection服務逾時")
     except RequestException as e:

@@ -18,7 +18,7 @@ class Book(BaseModel):
     publishYear: int
     describeBook: Optional[str] = None
 
-@collection_APIs.get("/{ISBN}") #館藏查詢某一本書
+@collection_APIs.get("/book/isbn/{ISBN}") #館藏查詢某一本書
 async def get_one_book(ISBN:str) -> Book:
     if len(ISBN) != 13:
         raise HTTPException(status_code=400, detail="書號輸入格式錯誤!!")
@@ -44,7 +44,7 @@ async def get_one_book(ISBN:str) -> Book:
                 describeBook = book['describeBook']
             )
 
-@collection_APIs.get("") #館藏查詢全部書籍
+@collection_APIs.get("/books") #館藏查詢全部書籍
 async def get_all_book() -> list[Book]:
     sql = f"SELECT * FROM book"
     books =  fecth_data(sql)
@@ -68,7 +68,7 @@ async def get_all_book() -> list[Book]:
             )
         return {"booklist":res}
 
-@collection_APIs.post("") #上架書籍
+@collection_APIs.post("/book") #上架書籍
 async def add_one_book(book: Book):
     if len(book.ISBN) != 13:
         raise HTTPException(status_code=404, detail="書號輸入格式錯誤!!")
@@ -90,7 +90,7 @@ async def add_one_book(book: Book):
             else:
                 return {"message": "上架書籍成功","ISBN": book.ISBN}
 
-@collection_APIs.put("/{ISBN}") #館藏調整
+@collection_APIs.put("/book/isbn/{ISBN}") #館藏數量調整
 async def update_one_book(ISBN:str,new_stock_num:int = Form()):
     if len(ISBN) != 13:
         raise HTTPException(status_code=404, detail="書號輸入格式錯誤!!")
@@ -116,7 +116,7 @@ async def update_one_book(ISBN:str,new_stock_num:int = Form()):
                 else:
                     return {"message": "館藏調整成功","ISBN": ISBN}
 
-@collection_APIs.delete("/{ISBN}") #下架書籍
+@collection_APIs.delete("/book/isbn/{ISBN}") #下架書籍
 async def delete_one_book(ISBN:str):
     if len(ISBN) != 13:
         raise HTTPException(status_code=404, detail="書號輸入格式錯誤!!")

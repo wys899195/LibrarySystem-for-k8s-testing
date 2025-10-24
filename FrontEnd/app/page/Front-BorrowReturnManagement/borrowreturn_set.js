@@ -37,7 +37,7 @@ function borrow_book(){
     if (userID && ISBN && bookNum){
         $.ajax({
             type: "POST",
-            url: "/api/v1/borrowReturn/borrowBook",
+            url: "/api/v1/borrowing/borrowBook",
             data: JSON.stringify({ 
                 "userID":userID,
                 "ISBN":ISBN,
@@ -60,7 +60,7 @@ function return_book(){
     if (userID && ISBN && bookNum){
         $.ajax({
             type: "POST",
-            url: "/api/v1/borrowReturn/returnBook",
+            url: "/api/v1/borrowing/returnBook",
             data: JSON.stringify({ 
                 "userID":userID,
                 "ISBN":ISBN,

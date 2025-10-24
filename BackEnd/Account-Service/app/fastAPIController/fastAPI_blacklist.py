@@ -12,7 +12,7 @@ class BlacklistItem(BaseModel):
     reason: Optional[str] = None
 
 
-@blacklist_APIs.get("/{userID}") #檢查使用者是否已經在黑名單內
+@blacklist_APIs.get("/user/id/{userID}") #檢查使用者是否已經在黑名單內
 async def check_user_is_in_blacklist(userID:str):
     sql = f"SELECT userID,username,reason FROM blacklist WHERE userID ='{userID}'"
     users = fecth_data(sql)
@@ -25,7 +25,7 @@ async def check_user_is_in_blacklist(userID:str):
             user = users[0]
             return {"is_user_in_blacklist": True}
 
-@blacklist_APIs.get("") # 取得所有使用者在黑名單的資訊
+@blacklist_APIs.get("/users") # 取得所有使用者在黑名單的資訊
 async def get_all_blacklist() -> list[BlacklistItem]:
     sql = "select userID,username,reason FROM blacklist"
     users = fecth_data(sql)
@@ -43,7 +43,7 @@ async def get_all_blacklist() -> list[BlacklistItem]:
             )
         return {"blacklist":res}
 
-@blacklist_APIs.post("") # 新增使用者到黑名單
+@blacklist_APIs.post("/user") # 新增使用者到黑名單
 async def post_one_user_to_blacklist(req : BlacklistItem):
     #檢查此使用者是否存在
     sql = f"select username FROM users where userID ='{req.userID}' LIMIT 1"
@@ -63,7 +63,7 @@ async def post_one_user_to_blacklist(req : BlacklistItem):
     else:
         raise HTTPException(status_code=404, detail="找不到該使用者")
         
-@blacklist_APIs.put("/{userID}") #編輯加入黑名單原因
+@blacklist_APIs.put("/user/id/{userID}") #編輯加入黑名單原因
 async def put_one_user_to_blacklist(userID:str,reason: Optional[str] = Form(None)):
     if reason:
         sql = f"update blacklist set reason = '{reason}' where userID = '{userID}'"
@@ -75,7 +75,7 @@ async def put_one_user_to_blacklist(userID:str,reason: Optional[str] = Form(None
     else:
         raise HTTPException(status_code=501, detail="編輯失敗，請聯絡管理員")
 
-@blacklist_APIs.delete("/{userID}") #將使用者從黑名單移除
+@blacklist_APIs.delete("/user/id/{userID}") #將使用者從黑名單移除
 async def delete_one_user_in_blacklist(userID:str):
     sql = f"delete from blacklist where userID = '{userID}'"
     result = set_data(sql)

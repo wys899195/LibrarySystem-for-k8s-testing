@@ -11,7 +11,7 @@ function login(){
     if (userID && password){
         $.ajax({
             type: "POST",
-            url: "../../api/v1/user/login",
+            url: "../../api/v1/account/user/login",
             data: { 
                 "userID":userID,
                 "password":password
@@ -20,7 +20,7 @@ function login(){
             success: function (response) {
                 $.ajax({
                     type: "GET",
-                    url: "/api/v1/user/id/"  + userID,
+                    url: "/api/v1/account/user/id/"  + userID,
                     dataType: "json",
                     success: function (response) {
                         console.log(response);

@@ -46,7 +46,7 @@ function load_ISBN_list(){
 
     $.ajax({
         type: "GET",
-        url: "/api/v1/collection",
+        url: "/api/v1/collection/books",
         dataType: "json",
         success: function(response) {
             response = response['booklist']
@@ -66,7 +66,7 @@ function load_current_stock_num(){
     let ISBN = $("#updatebook_ISBN").val();
     $.ajax({
         type: "GET",
-        url: "/api/v1/collection/"  + ISBN,
+        url: "/api/v1/collection/book/isbn/"  + ISBN,
         dataType: "json",
         success: function (response) {
             $("#updatebook_current_stock_num").text(response['stock_num']);
@@ -82,7 +82,7 @@ function load_current_borrow_state(){
     let ISBN = $("#deletebook_ISBN").val();
     $.ajax({
         type: "GET",
-        url: "/api/v1/collection/"  + ISBN,
+        url: "/api/v1/collection/book/isbn/"  + ISBN,
         dataType: "json",
         success: function (response) {
             if (parseInt(response['borrowed_num']) > 0){
@@ -113,7 +113,7 @@ function add_book(){
     else{
         $.ajax({
             type: "POST",
-            url: "/api/v1/collection",
+            url: "/api/v1/collection/book",
             data: JSON.stringify({ 
                 "ISBN":ISBN,
                 "stock_num": parseInt(stock_num),
@@ -146,7 +146,7 @@ function update_book(){
     else{
         $.ajax({
             type: "PUT",
-            url: "/api/v1/collection/" + ISBN,
+            url: "/api/v1/collection/book/" + ISBN,
             data: { 
                 "new_stock_num":parseInt(new_stock_num )
             },
@@ -171,7 +171,7 @@ function delete_book(){
     else{
         $.ajax({
             type: "DELETE",
-            url: "/api/v1/collection/" + ISBN,
+            url: "/api/v1/collection/book/" + ISBN,
             dataType: "json",
             success: function (response) {
                 load_ISBN_list();

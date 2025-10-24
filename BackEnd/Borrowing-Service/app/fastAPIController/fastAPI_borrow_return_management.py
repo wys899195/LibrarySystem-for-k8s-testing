@@ -1,9 +1,12 @@
-from fastapi import APIRouter,HTTPException
+from fastapi import APIRouter,HTTPException,Depends
 from service_communicator.account_service_comunicator import get_one_user
 from service_communicator.collection_service_comunicator import get_one_book
 from handler.db import set_data,fecth_data
 from datetime import datetime, timedelta
 from pydantic import BaseModel
+from handler.distributed_tracing_header_handler import get_forward_distributed_tracing_headers
+
+
 borrow_return_APIs = APIRouter(tags=["borrow/return management"])
 
 class BorrowReturnOperation(BaseModel):
@@ -11,16 +14,25 @@ class BorrowReturnOperation(BaseModel):
     ISBN: str
     bookNum: int
 @borrow_return_APIs.post("/borrowBook") #borrow book
-def borrow_book(op: BorrowReturnOperation):
+def borrow_book(
+    op: BorrowReturnOperation,
+    distributed_tracing_headers:dict = Depends(get_forward_distributed_tracing_headers)
+):
     userID = op.userID
     ISBN = op.ISBN
     bookNum = op.bookNum
 
     # Check if user exists
-    user = get_one_user(userID)
+    user = get_one_user(
+        userID=userID,
+        distributed_tracing_headers=distributed_tracing_headers
+    )
 
     # Check if the book is in the collection  
-    book = get_one_book(ISBN)
+    book = get_one_book(
+        ISBN=ISBN,
+        distributed_tracing_headers=distributed_tracing_headers
+    )
 
     origin_stockNum = book["stock_num"]
     origin_borrowNum = book["borrowed_num"]
@@ -54,16 +66,25 @@ def borrow_book(op: BorrowReturnOperation):
 
 
 @borrow_return_APIs.post("/returnBook") # return book
-def return_book(op: BorrowReturnOperation):
+def return_book(
+    op: BorrowReturnOperation,
+    distributed_tracing_headers:dict = Depends(get_forward_distributed_tracing_headers)
+):
     userID = op.userID
     ISBN = op.ISBN
     bookNum = op.bookNum
 
     # Check if user exists
-    user = get_one_user(userID)
+    user = get_one_user(
+        userID=userID,
+        distributed_tracing_headers=distributed_tracing_headers
+    )
 
     # Check if the book is in the collection  
-    book = get_one_book(ISBN)
+    book = get_one_book(
+        ISBN=ISBN,
+        distributed_tracing_headers=distributed_tracing_headers
+    )
 
     origin_stockNum = book["stock_num"]
     origin_borrowNum = book["borrowed_num"]

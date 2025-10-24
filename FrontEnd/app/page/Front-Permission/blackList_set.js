@@ -31,7 +31,7 @@ $(document).ready(function(){
     $.ajax({
         async:false,
         type: "GET",
-        url: "/api/v1/blacklist",
+        url: "/api/v1/account/blacklist/users",
         dataType: "json",
         success: function (response) {
             response = response['blacklist']
@@ -100,14 +100,14 @@ function add_user_to_blacklist(){
                 //檢查使用者是否已經在黑名單內
                 $.ajax({
                     type: "GET",
-                    url: "/api/v1/blacklist/" + userID,
+                    url: "/api/v1/account/blacklist/user/id/" + userID,
                     dataType: "json",
                     success: function (response) {
                         console.log(response);
                         if(!response['is_user_in_blacklist']){
                             $.ajax({
                                 type: "POST",
-                                url: "/api/v1/blacklist",
+                                url: "/api/v1/account/blacklist/user",
                                 data: JSON.stringify({ 
                                     "userID":userID,
                                     "reason":reason
@@ -144,14 +144,14 @@ function edit_user_in_blacklist(){
             //檢查使用者是否已不在黑名單內
             $.ajax({
                 type: "GET",
-                url: "/api/v1/blacklist/" + userID,
+                url: "/api/v1/account/blacklist/user/id/" + userID,
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
                     if(response['is_user_in_blacklist']){
                         $.ajax({
                             type: "PUT",
-                            url: "/api/v1/blacklist/" + userID,
+                            url: "/api/v1/account/blacklist/user/id/" + userID,
                             data: { 
                                 "reason":reason
                             },
@@ -186,14 +186,14 @@ function delete_user_in_blacklist(){
             //檢查使用者是否已不在黑名單內
             $.ajax({
                 type: "GET",
-                url: "/api/v1/blacklist/" + userID,
+                url: "/api/v1/account/blacklist/user/id/" + userID,
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
                     if(response['is_user_in_blacklist']){
                         $.ajax({
                             type: "DELETE",
-                            url: "/api/v1/blacklist/" + userID,
+                            url: "/api/v1/account/blacklist/user/id/" + userID,
                             dataType: "json",
                             success: function (response) {
                                 alert(response['message']);
