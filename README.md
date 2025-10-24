@@ -25,18 +25,3 @@ To install LibrarySystem on your Kubernetes cluster, follow the steps below.
 
 ### Viewing the front-end pages of this system.
 1. Open "[http://localhost:6677/](http://localhost:6677/)" to see the front-end homepage of the system.
-   
-## Uninstall
-1. You can execute stop.sh to quickly undeploy.
-   ```
-   ./stop.sh
-   ```
-2. After undeploying, also delete the namespace.
-   ```
-   kubectl delete ns library-system
-   ```
-3. Delete the related Docker containers.
-   ```
-   docker rmi -f wys899195/fastapi_library_system_backend
-   docker rmi -f wys899195/fastapi_library_system_frontend
-   ```
